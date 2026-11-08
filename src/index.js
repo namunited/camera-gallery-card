@@ -8,6 +8,7 @@ import { dump as yamlDump } from "js-yaml";
 import { cardStyles } from "./styles";
 import { STYLE_SECTIONS } from "./config/styling-config";
 import { injectLiveFillStyle } from "./ui/live-fill-style";
+import { observePreviewLayout } from "./ui/preview-layout";
 import {
   dayKeyFromMs,
   dtKeyFromMs,
@@ -779,6 +780,11 @@ class CameraGalleryCard extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+    const panel = this.renderRoot.querySelector(".panel");
+    if (panel && !this._stopPreviewLayout) {
+      this._previewLayoutPanel = panel;
+      this._stopPreviewLayout = observePreviewLayout(this, panel);
+    }
     document.addEventListener("fullscreenchange", this._onFullscreenChange);
     document.addEventListener("webkitfullscreenchange", this._onFullscreenChange);
     this.addEventListener('touchstart', this._onZoomTouchStart, { passive: false });
@@ -803,6 +809,9 @@ class CameraGalleryCard extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    this._stopPreviewLayout?.();
+    this._stopPreviewLayout = null;
+    this._previewLayoutPanel = null;
 
     document.removeEventListener("fullscreenchange", this._onFullscreenChange);
     document.removeEventListener("webkitfullscreenchange", this._onFullscreenChange);
@@ -5077,6 +5086,12 @@ class CameraGalleryCard extends LitElement {
   }
 
   updated(changedProps) {
+    const panel = this.renderRoot.querySelector(".panel");
+    if (this.isConnected && panel && panel !== this._previewLayoutPanel) {
+      this._stopPreviewLayout?.();
+      this._previewLayoutPanel = panel;
+      this._stopPreviewLayout = observePreviewLayout(this, panel);
+    }
     const dayChanged = changedProps.has("_selectedDay");
     const filterChanged = changedProps.has("_objectFilters");
 
@@ -5538,6 +5553,7 @@ class CameraGalleryCard extends LitElement {
 
     const previewBlock = showPreviewSection
       ? html`
+          <div class="preview-slot" style="aspect-ratio:${this._getPreviewAspectRatio(isLive)};">
           <div
             class="preview"
             style="aspect-ratio:${this._getPreviewAspectRatio(isLive)}; touch-action:${isLive ? "auto" : "pan-y"};"
@@ -5654,6 +5670,7 @@ class CameraGalleryCard extends LitElement {
             ${isLive && !isGridLayout(this.config, this._liveLayoutOverride) ? hamburgerPanel : html``}
             ${isLive && !isGridLayout(this.config, this._liveLayoutOverride) ? this._renderMicTalkbackBar() : html``}
             ${isLive && !isGridLayout(this.config, this._liveLayoutOverride) ? this._renderPtzOverlay() : html``}
+          </div>
           </div>
         `
       : html``;
