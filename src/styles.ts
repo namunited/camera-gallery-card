@@ -29,6 +29,7 @@ export const cardStyles = css`
       */
   :host {
     display: block;
+    height: 100%;
     ${sectionDefaults}
 
     /* ── text ── */
@@ -88,6 +89,7 @@ export const cardStyles = css`
     display: block;
     background: transparent;
     border-radius: 0;
+    height: 100%;
     min-height: 0;
     padding: 0;
     position: relative;
@@ -110,13 +112,19 @@ export const cardStyles = css`
       display: flex;
       flex-direction: column;
       flex: 1;
+      max-height: none;
       min-height: 0;
       border-radius: 0 !important;
+    }
+    & .preview-slot {
+      flex: 1;
+      aspect-ratio: auto !important;
     }
     & .preview {
       flex: 1 !important;
       height: auto !important;
       min-height: 0;
+      width: 100%;
       border-radius: 0 !important;
       overflow: hidden;
     }
@@ -133,7 +141,20 @@ export const cardStyles = css`
     padding: 0;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    max-height: var(--cgc-available-height, 100dvh);
     gap: var(--cgc-row-gap, 8px);
+  }
+  .panel > :not(.preview-slot) {
+    flex-shrink: 0;
+  }
+  .preview-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 0;
+    flex: 0 1 auto;
   }
   .divider {
     display: none;
@@ -146,7 +167,10 @@ export const cardStyles = css`
     border-radius: var(--cgc-card-radius);
     overflow: hidden;
     transform: translateZ(0);
-    width: 100%;
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    flex: none;
   }
 
   .pimg {
