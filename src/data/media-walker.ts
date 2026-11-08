@@ -650,7 +650,7 @@ export class MediaSourceClient {
     }
 
     const videoName = (src.split("/").pop() ?? "").toLowerCase();
-    const videoStem = videoName.replace(/\.(mp4|webm|mov|m4v)$/i, "");
+    const videoStem = videoName.replace(/\.(mp4|webm|mov|m4v|mkv)$/i, "");
 
     if (!videoStem) {
       this.snapshotCache.set(src, "");

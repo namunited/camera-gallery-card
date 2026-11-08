@@ -295,9 +295,9 @@ describe("MediaSourceClient.findMatchingSnapshotMediaId", () => {
     expect(client.snapshotCache.has("media-source://frigate/clips/1.mp4")).toBe(true);
   });
 
-  it("matches by exact filename stem", () => {
+  it.each(["mp4", "mkv", "MKV"])("matches %s videos by exact filename stem", (extension) => {
     const out = client.findMatchingSnapshotMediaId(
-      "media-source://frigate/clips/1700000000.123-abc.mp4"
+      `media-source://frigate/clips/1700000000.123-abc.${extension}`
     );
     expect(out).toBe("media-source://frigate/snapshots/1700000000.123-abc.jpg");
   });
