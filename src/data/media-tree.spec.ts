@@ -55,6 +55,7 @@ describe("discoverTree — Layout A (flat folder)", () => {
       file(`${ROOT}/RLC_20260501_080000.mp4`, "RLC_20260501_080000.mp4"),
       file(`${ROOT}/junk_no_date.txt`, "junk_no_date.txt", "text/plain"), // unrenderable
       file(`${ROOT}/RLC_no_match.mp4`, "RLC_no_match.mp4"), // renderable but format-mismatch
+      file(`${ROOT}/clip.MKV`, "clip.MKV", "application/octet-stream"),
     ]),
   };
 
@@ -63,8 +64,9 @@ describe("discoverTree — Layout A (flat folder)", () => {
     const result = await discoverTree([ROOT], fmt, browse);
     expect(result.isLazy).toBe(false);
     expect(browsedIds).toEqual([ROOT]);
-    // 4 renderable; the .txt is filtered out
-    expect(result.eagerItems.length).toBe(4);
+    // The .txt is filtered out; MKV is recognized even without video metadata.
+    expect(result.eagerItems.length).toBe(5);
+    expect(result.eagerItems.map((item) => item.id)).toContain(`${ROOT}/clip.MKV`);
   });
 
   it("buckets items by dayKey via the format", async () => {
