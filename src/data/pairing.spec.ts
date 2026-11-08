@@ -74,24 +74,27 @@ describe("pairVideoThumbnails", () => {
     expect(pairedThumbs.size).toBe(0);
   });
 
-  it("supports all video extensions: mp4, webm, mov, m4v", () => {
+  it("supports all video extensions: mp4, webm, mov, m4v, mkv", () => {
     const items = [
       { id: "a.mp4" },
       { id: "b.webm" },
       { id: "c.mov" },
       { id: "d.m4v" },
+      { id: "e.mkv" },
       { id: "a.jpg" },
       { id: "b.jpeg" },
       { id: "c.png" },
       { id: "d.webp" },
+      { id: "e.jpg" },
     ];
     const { items: filtered, pairedThumbs } = pairVideoThumbnails(items, (x) => x.id);
-    expect(filtered.map((x) => x.id)).toEqual(["a.mp4", "b.webm", "c.mov", "d.m4v"]);
-    expect(pairedThumbs.size).toBe(4);
+    expect(filtered.map((x) => x.id)).toEqual(["a.mp4", "b.webm", "c.mov", "d.m4v", "e.mkv"]);
+    expect(pairedThumbs.size).toBe(5);
     expect(pairedThumbs.get("a.mp4")).toBe("a.jpg");
     expect(pairedThumbs.get("b.webm")).toBe("b.jpeg");
     expect(pairedThumbs.get("c.mov")).toBe("c.png");
     expect(pairedThumbs.get("d.m4v")).toBe("d.webp");
+    expect(pairedThumbs.get("e.mkv")).toBe("e.jpg");
   });
 
   it("ignores non-image, non-video files (no false-positive pair)", () => {
@@ -128,6 +131,14 @@ describe("pairVideoThumbnails", () => {
 });
 
 describe("pairMediaSourceThumbnails", () => {
+  it.each(["mkv", "MKV"])("pairs %s videos using media-source URIs", (extension) => {
+    const video = { id: `media-source://media_source/local/Clip.${extension}` };
+    const thumbnail = { id: "media-source://media_source/local/clip.jpg" };
+    const result = pairMediaSourceThumbnails([thumbnail, video]);
+    expect(result.items).toEqual([video]);
+    expect(result.pairedThumbs).toEqual(new Map([[video.id, thumbnail.id]]));
+  });
+
   it("delegates to pairVideoThumbnails using the `id` accessor", () => {
     const items = [{ id: "x.mp4" }, { id: "x.jpg" }];
     const result = pairMediaSourceThumbnails(items);
@@ -144,6 +155,15 @@ describe("pairMediaSourceThumbnails", () => {
 });
 
 describe("pairSensorItems", () => {
+  it.each(["mkv", "MKV"])("pairs %s videos using sensor file paths", (extension) => {
+    const video = { src: `/recordings/Clip.${extension}`, dtMs: 1000 };
+    const thumbnail = { src: "/recordings/clip.png", dtMs: 1000 };
+    const unpaired = { src: "/recordings/other.mkv", dtMs: 2000 };
+    const result = pairSensorItems([thumbnail, video, unpaired]);
+    expect(result.items).toEqual([video, unpaired]);
+    expect(result.pairedThumbs).toEqual(new Map([[video.src, thumbnail.src]]));
+  });
+
   it("delegates to pairVideoThumbnails using the `src` accessor", () => {
     const items = [{ src: "/clip.mp4" }, { src: "/clip.jpg" }];
     const result = pairSensorItems(items);

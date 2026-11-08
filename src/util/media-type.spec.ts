@@ -8,11 +8,13 @@ describe("isVideo", () => {
     expect(isVideo("clip.webm")).toBe(true);
     expect(isVideo("clip.mov")).toBe(true);
     expect(isVideo("clip.m4v")).toBe(true);
+    expect(isVideo("clip.mkv")).toBe(true);
   });
 
   it("is case-insensitive", () => {
     expect(isVideo("CLIP.MP4")).toBe(true);
     expect(isVideo("Clip.WebM")).toBe(true);
+    expect(isVideo("Clip.MKV")).toBe(true);
   });
 
   it("returns false for image extensions", () => {
@@ -38,6 +40,7 @@ describe("isVideo", () => {
 
   it("strips both query and fragment", () => {
     expect(isVideo("/clip.mp4?x=1#frag")).toBe(true);
+    expect(isVideo("/clip.mkv?x=1#frag")).toBe(true);
   });
 
   it("matches only at the end of the path", () => {

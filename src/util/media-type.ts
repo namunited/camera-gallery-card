@@ -11,7 +11,7 @@
  * testing), so a shared constant doesn't simplify the code.
  */
 
-const VIDEO_EXTENSION_RE = /\.(mp4|webm|mov|m4v)$/i;
+const VIDEO_EXTENSION_RE = /\.(mp4|webm|mov|m4v|mkv)$/i;
 
 /**
  * True when `src` looks like a video file URL/path. Strips any query

@@ -15,7 +15,7 @@
  * named exports are thin wrappers that pass the right accessor.
  */
 
-const VIDEO_EXT_RE = /([^/]+)\.(mp4|webm|mov|m4v)$/i;
+const VIDEO_EXT_RE = /([^/]+)\.(mp4|webm|mov|m4v|mkv)$/i;
 const IMAGE_EXT_RE = /([^/]+)\.(jpg|jpeg|png|webp)$/i;
 
 /** Common shape for items that key off a media-source URI. */

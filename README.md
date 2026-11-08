@@ -167,7 +167,7 @@ A few notes on the generic walker:
   - Frigate cameras: Frigate snapshot
   - All other sources (NAS, Blue Iris, etc.): first-frame capture
 - Sensor mode: first-frame capture
-- **Paired image + video** — when a snapshot and clip share the same filename stem they're shown as one item, with the image used as the thumbnail
+- **Paired image + video** — when a snapshot and clip (MP4, WebM, MOV, M4V, or MKV) share the same filename stem they're shown as one item, with the image used as the thumbnail. Video playback depends on browser support for the container and codecs.
 
 ### Video controls
 

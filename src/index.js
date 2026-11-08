@@ -4439,7 +4439,7 @@ class CameraGalleryCard extends LitElement {
     if (dtKey) return formatDateTime(dtKey, this._hass?.locale);
 
     const base = name.split("/").pop() || name;
-    const noExt = base.replace(/\.(mp4|webm|mov|m4v|jpg|jpeg|png|webp|gif)$/i, "");
+    const noExt = base.replace(/\.(mp4|webm|mov|m4v|mkv|jpg|jpeg|png|webp|gif)$/i, "");
     return noExt.length > 42 ? `${noExt.slice(0, 39)}…` : noExt;
   }
 
